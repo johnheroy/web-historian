@@ -1,8 +1,8 @@
-var fs= require('fs');
-var url= require('url');
-var path = require('path');
-var archive = require('../helpers/archive-helpers');
-var httpHelpers= require('./http-helpers');
+var httpHelpers = require('./http-helpers');
+var archive     = require('../helpers/archive-helpers');
+var path        = require('path');
+var url         = require('url');
+var fs          = require('fs');
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
@@ -34,24 +34,16 @@ exports.handleRequest = function (req, res) {
         if(urlInList){
           archive.isURLArchived(urlToUse, function(urlArchived){
             if (urlArchived){
-              res.writeHead(200, httpHelpers.headers);
-              httpHelpers.serveArchives(res, urlToUse, function(data){
-                res.end(data.toString());
-              });
+              httpHelpers.serveArchives(res, urlToUse, 200);
             } else {
-              res.writeHead(200, httpHelpers.headers);
-              httpHelpers.serveAssets(res, 'loading.html', function(data){
-                res.end(data.toString());
-              });
+              httpHelpers.serveAssets(res, 'loading.html', 200);
             }
           });
         } else {
           fs.appendFile(archive.paths.list, urlToUse+'\n', function (err) {
             if (err) throw err;
             res.writeHead(200, httpHelpers.headers);
-            httpHelpers.serveAssets(res, 'loading.html', function(data){
-              res.end(data.toString());
-            })
+            httpHelpers.serveAssets(res, 'loading.html', 200);
           });
         }
       });
